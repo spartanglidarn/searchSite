@@ -3,9 +3,9 @@
 include '../db/dbconn.php';
 $timeStamp = date('Y-m-d H:i:s');
 //header('Content-Type: text/plain');
-header('Content-Type: application/json');
-$searchString = $_POST['searchString'];
-//$searchString = "testing script";
+//header('Content-Type: application/json');
+//$searchString = $_POST['searchString'];
+$searchString = "vattenflaska";
 
 //sätter upp sql frågan till databasen.
 $stmt = $conn->prepare('INSERT INTO search_strings(search_string, reg_date)
@@ -36,11 +36,9 @@ $dbPostId = $conn->insert_id;
 $stmt->close();
 
 //söker på google och bing, samt sparar ner i databasen
-$testSearchString = "for honor";
-$stripSearchString = str_replace(" ", "+", $testSearchString);
 $encodedSearchString = urlencode($searchString);
 
-$google = 'http://www.google.com/search?num="30"&q='. $encodedSearchString;
+$google = 'http://www.google.com/search?num=30&q='. $encodedSearchString;
 $bing = "http://www.bing.com";
 $searchEngine = "Google";
 
@@ -54,7 +52,7 @@ curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 
 
-$output = curl_exec($ch);
+echo $output = curl_exec($ch);
 curl_close($ch);
 
 //letar reda på alla h3 taggar med klassen "r"

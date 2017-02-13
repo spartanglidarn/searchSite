@@ -19,48 +19,22 @@ include("header.php");
 	<!--tabbar med sökresultat-->
 	<div id="resulttabs" class="row">
 		<ul class="nav nav-tabs">
-			<li class="linkButton active"><a href="#">Alla</a></li>
-			<li class="linkButton"><a href="#">Google</a></li>
-			<li class="linkButton"><a href="#">Bing</a></li>
+			<li id="allButton" class="linkButton active"><a href="#">Alla</a></li>
+			<li id="googleButton" class="linkButton"><a href="#">Google</a></li>
+			<li id="bingButton" class="linkButton"><a href="#">Bing</a></li>
 		</ul>
 		<!-- lista med sökresultat -->
 		<div id="allLinks" class="list-group linkList">
 			<!--
+			Alla resultat visas här.
 			<a href="#" class="list-group-item">Item 1</a>
-			<a href="#" class="list-group-item">Item 2</a>
-			<a href="#" class="list-group-item">Item 3</a>
-			<a href="#" class="list-group-item">Item 4</a>
-			<a href="#" class="list-group-item">Item 5</a>
-			<a href="#" class="list-group-item">Item 6</a>
-			<a href="#" class="list-group-item">Item 7</a>
-			<a href="#" class="list-group-item">Item 8</a>
-			<a href="#" class="list-group-item">Item 9</a>
-			<a href="#" class="list-group-item">Item 10</a>
 			-->
 		</div><!-- lista med sökresultat slutar här-->
 		<div id="googleLinks" class="list-group linkList hidden">
-			<a href="#" class="list-group-item">Item 1</a>
-			<a href="#" class="list-group-item">Item 2</a>
-			<a href="#" class="list-group-item">Item 3</a>
-			<a href="#" class="list-group-item">Item 4</a>
-			<a href="#" class="list-group-item">Item 5</a>
-			<a href="#" class="list-group-item">Item 6</a>
-			<a href="#" class="list-group-item">Item 7</a>
-			<a href="#" class="list-group-item">Item 8</a>
-			<a href="#" class="list-group-item">Item 9</a>
-			<a href="#" class="list-group-item">Item 10</a>
+		<!--Google resultat visas här -->
 		</div>
 		<div id="bingLinks" class="list-group linkList hidden">
-			<a href="#" class="list-group-item">Item 1</a>
-			<a href="#" class="list-group-item">Item 2</a>
-			<a href="#" class="list-group-item">Item 3</a>
-			<a href="#" class="list-group-item">Item 4</a>
-			<a href="#" class="list-group-item">Item 5</a>
-			<a href="#" class="list-group-item">Item 6</a>
-			<a href="#" class="list-group-item">Item 7</a>
-			<a href="#" class="list-group-item">Item 8</a>
-			<a href="#" class="list-group-item">Item 9</a>
-			<a href="#" class="list-group-item">Item 10</a>
+		<!--Bing resultat visas här -->
 		</div>
 
 		<!-- test paragraf för sökresultat -->

@@ -10,32 +10,68 @@ $(document).ready(function() {
 			cache: false,
 			success: function(returnValue)
         	{
-            	alert("search Submitted");
+            	//alert("search Submitted");
             	console.log(returnValue);
             	handleReturn(returnValue);
         	},
       		error: function (returnValue){
-				alert("search was not submitted corectly");
-				console.log("Ajax post error:");
+				//alert("search was not submitted corectly");
 				console.log(returnValue);
+				handleError();
+
 			}
 		});
 
 	});
 
+	$('.linkButton').click(function(){
+		$('.linkButton').removeClass('active');
+		$(this).addClass('active');
+		$('.list-group').addClass('hidden');
+	});
+
+	$('#allButton').click(function(){
+		$('#allLinks').removeClass('hidden');
+	});
+
+	$('#googleButton').click(function(){
+		$('#googleLinks').removeClass('hidden');
+	});
+
+	$('#bingButton').click(function(){
+		$('#bingLinks').removeClass('hidden');
+	});
+
+
 });
 
 
-	function handleReturn (returnJson){
-		$('#allLinks').empty();
-		for (var i = 0; i < returnJson.length; i++){
-			$('#allLinks').append( '<a target="_blank" href="' + returnJson[i].url +'" class="list-group-item"><b>' + 
-			returnJson[i].name + '</b><p>' + returnJson[i].url + '</p></a>' );
+function handleReturn (returnJson){
+	$('#allLinks').empty();
+	$('#googleLinks').empty();
+	$('#bingLinks').empty();
+	for (var i = 0; i < returnJson.length; i++){
+		var urlString = returnJson[i].url;
+		var nameString = returnJson[i].name;
+		if (urlString.length >= 30){
+			urlString = urlString.substring(0, 27);
+			urlString = urlString + "...";
+		}
+		$('#allLinks').append( '<a target="_blank" href="' + returnJson[i].url +'" class="list-group-item"><b>' + 
+		returnJson[i].name + '</b><br>' + urlString + '<br> Search engine: ' +  returnJson[i].searchEngine + '</a>' );
+
+		if (returnJson[i].searchEngine == "Google"){
+			$('#googleLinks').append( '<a target="_blank" href="' + returnJson[i].url +'" class="list-group-item"><b>' + 
+			returnJson[i].name + '</b><br>' + urlString + '</a>' );
 		}
 
-
-
 	}
+}
+
+function handleError(){
+	$('#allLinks').empty();
+	$('#allLinks').append( '<a class="list-group-item"><b>Something went wrong with the search, please try again</b></a>');
+}
 
 
 		/*<a href="#" class="list-group-item">

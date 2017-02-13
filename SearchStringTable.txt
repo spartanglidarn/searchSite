@@ -1,0 +1,5 @@
+ID		int ai index
+StringID	int
+Result		String
+SearchEngine	String (google or bing)
+Rank		int

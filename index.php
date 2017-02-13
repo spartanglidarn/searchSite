@@ -19,9 +19,9 @@ include("header.php");
 	<!--tabbar med sökresultat-->
 	<div id="resulttabs" class="row">
 		<ul class="nav nav-tabs">
-			<li class="active"><a href="#">Alla</a></li>
-			<li><a href="#">Google</a></li>
-			<li><a href="#">Bing</a></li>
+			<li class="linkButton active"><a href="#">Alla</a></li>
+			<li class="linkButton"><a href="#">Google</a></li>
+			<li class="linkButton"><a href="#">Bing</a></li>
 		</ul>
 		<!-- lista med sökresultat -->
 		<div id="allLinks" class="list-group linkList">

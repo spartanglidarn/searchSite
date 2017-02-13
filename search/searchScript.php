@@ -40,7 +40,7 @@ $testSearchString = "for honor";
 $stripSearchString = str_replace(" ", "+", $testSearchString);
 $encodedSearchString = urlencode($searchString);
 
-$google = "http://www.google.com/search?q=". $encodedSearchString;
+$google = 'http://www.google.com/search?num="30"&q='. $encodedSearchString;
 $bing = "http://www.bing.com";
 $searchEngine = "Google";
 

@@ -1,0 +1,28 @@
+body{
+	font-family: "VT323", monospace, "HelvetivaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+	font-weight: lighter;
+	letter-spacing: 2px;
+	font-size: 14px;
+}	
+
+h1, h2, h3, h4, h4, h6 {
+	padding: 10px;
+}
+
+footer {
+	border: 1px solid black;
+}
+
+
+#searchfield {
+	width: 100%;
+}
+
+.row{
+	margin: 20px;
+}
+
+.list-group-item{
+    white-space:normal !important;
+    word-wrap:break-word; 
+}

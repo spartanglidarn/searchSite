@@ -3,9 +3,9 @@
 include '../db/dbconn.php';
 $timeStamp = date('Y-m-d H:i:s');
 //header('Content-Type: text/plain');
-//header('Content-Type: application/json');
-//$searchString = $_POST['searchString'];
-$searchString = "vattenflaska";
+header('Content-Type: application/json');
+$searchString = $_POST['searchString'];
+//$searchString = "testing script";
 
 //sätter upp sql frågan till databasen.
 $stmt = $conn->prepare('INSERT INTO search_strings(search_string, reg_date)
@@ -39,8 +39,9 @@ $stmt->close();
 $encodedSearchString = urlencode($searchString);
 
 $google = 'http://www.google.com/search?num=30&q='. $encodedSearchString;
-$bing = "http://www.bing.com";
+$bing = 'http://www.bing.com/search?count=30&q='. $encodedSearchString;
 $searchEngine = "Google";
+$bingSearchEngine = "Bing";
 
 $sitesToSearch = array($google);
 
@@ -52,12 +53,24 @@ curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 
 
-echo $output = curl_exec($ch);
+$output = curl_exec($ch);
+
+curl_setopt($ch, CURLOPT_URL, $bing);
+curl_setopt($ch, CURLOPT_USERAGENT, "Google Bot");
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+
+$bingOutput = curl_exec($ch);
+
 curl_close($ch);
 
 //letar reda på alla h3 taggar med klassen "r"
 $googleSearchRegex = '~<h3\s+class="r">(.*?)<\/h3>~';
+$bingSearchRegex = '~<div\s+class="b_title"><h2>(.*?)<\/h2>~';
+
 preg_match_all($googleSearchRegex, $output, $match, PREG_PATTERN_ORDER);
+preg_match_all($bingSearchRegex, $bingOutput, $bingMatch, PREG_PATTERN_ORDER);
+
 
 
 //sätter upp sql frågan till databasen för att spara sökresultat.
@@ -71,39 +84,78 @@ if ( false===$resultStmt ) {
 $searchResultsArray = array();	
 
 //loopar igenom arrayens första objekt för att gå igenom varje div-tagg
-$rankCounter = 0;
+$rankCounter = 1;
+
+foreach ($bingMatch[1] as $bingValue) {
+	$bingSplitResult = explode('>', $bingValue, 2);
+	preg_match_all('~<a href="(.*?)"~', $bingSplitResult[0], $bingLinkUrl);
+	
+	$bingLinkName = strip_tags($bingSplitResult[1]);
+	
+
+	if (isset($bingLinkUrl[1][0])){
+		$bingLinkUrlString = $bingLinkUrl[1][0];
+		if (($bingLinkUrlString != null) && ($bingLinkName != null)){
+			if($rankCounter <= 10){
+
+				$resultBp = $resultStmt->bind_param('isssi', $dbPostId, $bingLinkUrlString, $bingLinkName, $bingSearchEngine, $rankCounter);
+				//kollar efter felmeddelande i $bp
+				if ( false===$resultBp ) {
+					die('bind_param() failed: ' . htmlspecialchars($resultStmt->error));
+				}
+
+				//kör sql frågan mot databasen.
+				$resultStmtexe = $resultStmt->execute();
+				//kollar efter felmeddelande i $stmtexe
+				if ( false===$resultStmtexe ) {
+				  	die('execute() failed: ' . htmlspecialchars($resultStmt->error));
+				}
+				array_push($searchResultsArray, array("url" => $bingLinkUrlString, "name" => $bingLinkName, "searchEngine" => $bingSearchEngine, "rank" => $rankCounter));
+				$rankCounter ++;
+			} else {
+				break;
+			}
+		}
+	}
+}
+
+$rankCounter = 1;
+
 foreach($match[1] as $valueTwo){
 
 	//skriv ut objektet.
 	$splitResult = explode('>', $valueTwo, 2);
 	//$linkUrl = new SimpleXMLElement($splitResult[0]);
-	preg_match_all('~<a href="\/url\?q=(.*?)"~', $splitResult[0], $linkUrl);
+	preg_match_all('~<a href="\/url\?q=(.*?)&amp~', $splitResult[0], $linkUrl);
 	$linkName = strip_tags($splitResult[1]);
 
 
-	$rankCounter ++;
+	
 	if(isset($linkUrl[1][0])){
 		$linkUrlString = $linkUrl[1][0];
 		if (!preg_match('~Nyheter~', $valueTwo) && ($linkUrlString != null) && ($linkName != null)){
 
+			if ($rankCounter <= 10){
+				//binder data till den fördefinerade sql frågan.
+				$resultBp = $resultStmt->bind_param('isssi', $dbPostId, $linkUrlString, $linkName, $searchEngine, $rankCounter);
 
-			//binder data till den fördefinerade sql frågan.
-			$resultBp = $resultStmt->bind_param('isssi', $dbPostId, $linkUrlString, $linkName, $searchEngine, $rankCounter);
+				//kollar efter felmeddelande i $bp
+				if ( false===$resultBp ) {
+					die('bind_param() failed: ' . htmlspecialchars($resultStmt->error));
+				}
 
-			//kollar efter felmeddelande i $bp
-			if ( false===$resultBp ) {
-				die('bind_param() failed: ' . htmlspecialchars($resultStmt->error));
+				//kör sql frågan mot databasen.
+				$resultStmtexe = $resultStmt->execute();
+				//kollar efter felmeddelande i $stmtexe
+				if ( false===$resultStmtexe ) {
+				  	die('execute() failed: ' . htmlspecialchars($resultStmt->error));
+				}
+
+				array_push($searchResultsArray, array("url" => $linkUrlString, "name" => $linkName, "searchEngine" => $searchEngine, "rank" => $rankCounter));
+				$rankCounter ++;
+			} else {
+				break;
 			}
-
-			//kör sql frågan mot databasen.
-			$resultStmtexe = $resultStmt->execute();
-			//kollar efter felmeddelande i $stmtexe
-			if ( false===$resultStmtexe ) {
-			  	die('execute() failed: ' . htmlspecialchars($resultStmt->error));
-			}
-
-			array_push($searchResultsArray, array("url" => $linkUrlString, "name" => $linkName, "searchEngine" => $searchEngine, "rank" => $rankCounter));
-
 		} 
 	}	
 }

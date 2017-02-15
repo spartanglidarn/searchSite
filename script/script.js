@@ -47,21 +47,24 @@ $(document).ready(function() {
 
 
 function handleReturn (returnJson){
-	$('#allLinks').empty();
-	$('#googleLinks').empty();
-	$('#bingLinks').empty();
+	$('.linkList').empty();
+	
 	for (var i = 0; i < returnJson.length; i++){
 		var urlString = returnJson[i].url;
 		var nameString = returnJson[i].name;
-		if (urlString.length >= 30){
+		/*if (urlString.length >= 30){
 			urlString = urlString.substring(0, 27);
 			urlString = urlString + "...";
-		}
+		}*/
 		$('#allLinks').append( '<a target="_blank" href="' + returnJson[i].url +'" class="list-group-item"><b>' + 
-		returnJson[i].name + '</b><br>' + urlString + '<br> Search engine: ' +  returnJson[i].searchEngine + '</a>' );
+		returnJson[i].name + '</b><br>' + urlString + '<br> Search engine: ' +  returnJson[i].searchEngine + '<br> Rank: ' + returnJson[i].rank + '</a>' );
 
 		if (returnJson[i].searchEngine == "Google"){
 			$('#googleLinks').append( '<a target="_blank" href="' + returnJson[i].url +'" class="list-group-item"><b>' + 
+			returnJson[i].name + '</b><br>' + urlString + '</a>' );
+		}
+		if (returnJson[i].searchEngine == "Bing"){
+			$('#bingLinks').append( '<a target="_blank" href="' + returnJson[i].url +'" class="list-group-item"><b>' + 
 			returnJson[i].name + '</b><br>' + urlString + '</a>' );
 		}
 
@@ -69,8 +72,8 @@ function handleReturn (returnJson){
 }
 
 function handleError(){
-	$('#allLinks').empty();
-	$('#allLinks').append( '<a class="list-group-item"><b>Something went wrong with the search, please try again</b></a>');
+	$('.linkList').empty();
+	$('.linkList').append( '<a class="list-group-item"><b>Something went wrong with the search, please try again</b></a>');
 }
 
 
